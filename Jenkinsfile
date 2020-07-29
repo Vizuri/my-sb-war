@@ -8,18 +8,18 @@ pipeline {
   }
   
   stages {
-	stage('Checkout') {
-	  steps {
-		//checkout scm
-	    checkout([
-         $class: 'GitSCM',
-         branches: scm.branches,
-         doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-         extensions: scm.extensions,
-         userRemoteConfigs: scm.userRemoteConfigs
-    	])
-      }
-    }
+//	stage('Checkout') {
+//	  steps {
+//		//checkout scm
+//	    checkout([
+//         $class: 'GitSCM',
+//         branches: scm.branches,
+//         doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+//        extensions: scm.extensions,
+//         userRemoteConfigs: scm.userRemoteConfigs
+//    	])
+//      }
+//    }
     // Add Lab 3 Here
     stage('Build App') {
       steps {
