@@ -46,6 +46,7 @@ pipeline {
                   echo '->> In Buildah <<-'
                   pwd
                   ls
+                  buildah bud -t my-sb-war:1.0 .
                   echo '->> Done Buildah <<-'
                 '''
             }
