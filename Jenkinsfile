@@ -39,6 +39,18 @@ pipeline {
       }
     }
 
+    stage('Build Container') {
+      steps {
+            container("buildah") {
+                sh  '''
+                  echo '->> In Buildah <<-'
+                  pwd
+                  ls
+                  echo '->> Done Buildah <<-'
+                '''
+            }
+        }
+    }
 
 
   }
