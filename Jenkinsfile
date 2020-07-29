@@ -9,6 +9,7 @@ pipeline {
   
   stages {
 	stage('Checkout') {
+	  steps {
 		//checkout scm
 	    checkout([
          $class: 'GitSCM',
@@ -17,6 +18,7 @@ pipeline {
          extensions: scm.extensions,
          userRemoteConfigs: scm.userRemoteConfigs
     	])
+      }
     }
     // Add Lab 3 Here
     stage('Build App') {
