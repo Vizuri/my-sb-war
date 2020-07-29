@@ -46,6 +46,7 @@ pipeline {
                   echo '->> In Buildah <<-'
                   pwd
                   ls
+                  buildah login -u keudy@vizuri.com -p M@dison30 registry.redhat.io
                   buildah bud -t my-sb-war:1.0 .
                   echo '->> Done Buildah <<-'
                 '''
