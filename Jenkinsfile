@@ -47,7 +47,7 @@ pipeline {
                   pwd
                   ls
                   buildah login -u keudy@vizuri.com -p M@dison30 registry.redhat.io
-                  buildah login -u keudy -p M@dison30 docker.io                 
+                  buildah login -u kenteudy -p M@dison30 docker.io                 
                   buildah bud -t vizuri/my-sb-war:1.0 .
                   buildah push vizuri/my-sb-war:1.0
                   echo '->> Done Buildah <<-'
