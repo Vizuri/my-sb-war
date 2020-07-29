@@ -2,11 +2,13 @@
 def version, mvnCmd = "mvn"
 
 pipeline {
+
   agent {
     label 'maven-buildah'
   }
+  
   stages {
-	stage('Checkout')
+	stage('Checkout') {
 		//checkout scm
 	    checkout([
          $class: 'GitSCM',
