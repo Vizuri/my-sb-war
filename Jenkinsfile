@@ -59,7 +59,7 @@ pipeline {
             container("buildah") {
                 sh  '''
                   echo '->> In Helm Package <<-'
-                  helm package src/main/helm/ --app-version=1.0
+                  helm package src/main/helm/ --version=1.0 --app-version=1.0
                   echo '->> Done Helm Package <<-'
                 '''
             }
@@ -71,7 +71,7 @@ pipeline {
         container("buildah") { 
         sh  '''
           echo '->> In Helm Install <<-'
-          helm upgrade --install my-sb-war src/main/helm/ --namespace=dev-my-sb-war
+          helm upgrade --install my-sb-war my-sb-war-1.0.tgz --namespace=dev-my-sb-war
           echo '->> Done Helm Install <<-'
         '''	            
       }
