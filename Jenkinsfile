@@ -1,7 +1,7 @@
 //def version, mvnCmd = "mvn -s configuration/cicd-settings-nexus3.xml"
 def version, mvnCmd = "mvn"
-def app_name="my-sb-war"
-def project="dev-my-sb-war"
+//def app_name="my-sb-war"
+//def project="dev-my-sb-war"
 
 pipeline {
 
@@ -34,8 +34,8 @@ pipeline {
                   echo '->> In Buildah <<-'
                   buildah login -u keudy@vizuri.com -p M@dison30 registry.redhat.io
                   buildah login -u kenteudy -p M@dison30 docker.io                 
-                  buildah bud -t vizuri/my-sb-war:${version} .
-                  buildah push vizuri/my-sb-war:${version}
+                  buildah bud -t vizuri/my-sb-war:1.0 .
+                  buildah push vizuri/my-sb-war:1.0
                   echo '->> Done Buildah <<-'
                 '''
             }
