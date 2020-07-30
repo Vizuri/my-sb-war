@@ -1,8 +1,8 @@
 //def version, mvnCmd = "mvn -s configuration/cicd-settings-nexus3.xml"
 def version, mvnCmd = "mvn"
-def version=1.0
-def app_name=my-sb-war
-def project=dev-my-sb-war
+def version="1.0"
+def app_name="my-sb-war"
+def project="dev-my-sb-war"
 
 pipeline {
 
