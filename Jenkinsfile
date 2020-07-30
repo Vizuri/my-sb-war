@@ -44,9 +44,7 @@ pipeline {
             container("buildah") {
                 sh  '''
                   echo '->> In Buildah <<-'
-                  pwd
-                  ls
-                  buildah login -u keudy@vizuri.com -p M@dison30 registry.redhat.io
+\                 buildah login -u keudy@vizuri.com -p M@dison30 registry.redhat.io
                   buildah login -u kenteudy -p M@dison30 docker.io                 
                   buildah bud -t vizuri/my-sb-war:1.0 .
                   buildah push vizuri/my-sb-war:1.0
@@ -55,7 +53,34 @@ pipeline {
             }
         }
     }
+   
+    stage('Helm Package') {
+      steps {
+            container("buildah") {
+                sh  '''
+                  echo '->> In Helm Package <<-'
+                  helm package src/main/helm/ --app-version=1.0
+                  echo '->> Done Helm Package <<-'
+                '''
+            }
+        }
+    }
 
 
+    stage('Deploy Dev') {
+      steps {
+        container("buildah") {      
+	          openshift.withCluster() {
+	            openshift.withProject("dev-my-sb-war") {
+                sh  '''
+                  echo '->> In Helm Install <<-'
+                  helm install src/main/helm/ --app-version=1.0
+                  echo '->> Done Helm Install <<-'
+                '''	            
+	            }
+	          }
+        }
+      }
+    }
   }
 }
