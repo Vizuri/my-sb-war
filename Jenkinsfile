@@ -1,6 +1,5 @@
 //def version, mvnCmd = "mvn -s configuration/cicd-settings-nexus3.xml"
 def version, mvnCmd = "mvn"
-def version="1.0"
 def app_name="my-sb-war"
 def project="dev-my-sb-war"
 
@@ -58,13 +57,13 @@ pipeline {
     stage('Deploy DEV') {
       steps {
         container("buildah") { 
-        sh  '''
-          echo '->> In Helm Install <<-'
-          helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${project}
-          echo '->> Done Helm Install <<-'
-        '''	            
+          sh  '''
+            echo '->> In Helm Install <<-'
+            helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${project}
+            echo '->> Done Helm Install <<-'
+          '''	            
+        }
       }
-    }
-  } 
+    } 
   }
 }
