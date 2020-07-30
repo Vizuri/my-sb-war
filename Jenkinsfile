@@ -69,8 +69,8 @@ pipeline {
 
     stage('Deploy Dev') {
       steps {
-        container("buildah") {  
-          scripts {    
+       scripts {         
+         container("buildah") {  
 	          openshift.withCluster() {
 	            openshift.withProject("dev-my-sb-war") {
                 sh  '''
