@@ -68,18 +68,12 @@ pipeline {
     
     stage('Deploy DEV') {
       steps {
-        script {
-          openshift.withCluster() {
-            openshift.withProject("dev-my-sb-war") {
-              container("buildah") { 
-                sh  '''
-                  echo '->> In Helm Install <<-'
-                  helm install my-sb-war src/main/helm/ 
-                  echo '->> Done Helm Install <<-'
-                '''	            
-	          }
-	       }
-	    }
+        container("buildah") { 
+        sh  '''
+          echo '->> In Helm Install <<-'
+          helm install my-sb-war src/main/helm/ --namespace=dev-my-sb-war
+          echo '->> Done Helm Install <<-'
+        '''	            
       }
     }
   } 
