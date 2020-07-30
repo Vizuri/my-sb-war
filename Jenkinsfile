@@ -74,7 +74,7 @@ pipeline {
               container("buildah") { 
                 sh  '''
                   echo '->> In Helm Install <<-'
-                  helm install src/main/helm/ 
+                  helm install my-sb-war src/main/helm/ 
                   echo '->> Done Helm Install <<-'
                 '''	            
 	          }
