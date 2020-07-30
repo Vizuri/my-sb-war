@@ -65,22 +65,23 @@ pipeline {
             }
         }
     }
+    
     stage('Deploy DEV') {
       steps {
         script {
           openshift.withCluster() {
             openshift.withProject("dev-my-sb-war") {
-         		container("buildah") { 
-	                sh  '''
-	                  echo '->> In Helm Install <<-'
-	                  helm install src/main/helm/ --app-version=1.0
-	                  echo '->> Done Helm Install <<-'
-	                '''	            
-	            }
+              container("buildah") { 
+                sh  '''
+                  echo '->> In Helm Install <<-'
+                  helm install src/main/helm/ --app-version=1.0
+                  echo '->> Done Helm Install <<-'
+                '''	            
+	          }
 	       }
 	    }
       }
     }
-      
+  } 
   }
 }
