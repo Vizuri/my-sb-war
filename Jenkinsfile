@@ -1,14 +1,14 @@
 //def version, mvnCmd = "mvn -s configuration/cicd-settings-nexus3.xml"
 def version, mvnCmd = "mvn"
-//def app_name="my-sb-war"
-//def project="dev-my-sb-war"
+def app_name="my-sb-war"
+def project="dev-my-sb-war"
 
 pipeline {
 
   agent {
     label 'maven-buildah'
   }
-  
+  stages {
     stage('Build App') {
       steps {
         //git branch: 'master', url: 'http://gogs.apps.ocpws.kee.vizuri.com/student1/openshift-tasks.git'
@@ -34,8 +34,8 @@ pipeline {
                   echo '->> In Buildah <<-'
                   buildah login -u keudy@vizuri.com -p M@dison30 registry.redhat.io
                   buildah login -u kenteudy -p M@dison30 docker.io                 
-                  buildah bud -t vizuri/my-sb-war:1.0 .
-                  buildah push vizuri/my-sb-war:1.0
+                  buildah bud -t vizuri/my-sb-war:${version} .
+                  buildah push vizuri/my-sb-war:${version}
                   echo '->> Done Buildah <<-'
                 '''
             }
@@ -47,7 +47,7 @@ pipeline {
             container("buildah") {
                 sh  '''
                   echo '->> In Helm Package <<-'
-                  helm package src/main/helm/ --version=1.0 --app-version=1.0
+                  helm package src/main/helm/ --version=${version} --app-version=${version} 
                   echo '->> Done Helm Package <<-'
                 '''
             }
@@ -59,11 +59,11 @@ pipeline {
         container("buildah") { 
           sh  '''
             echo '->> In Helm Install <<-'
-            helm upgrade --install ${app_name} my-sb-war-1.0.tgz --namespace=dev-my-sb-war
+            helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${project}
             echo '->> Done Helm Install <<-'
           '''	            
         }
       }
     } 
   }
-//}
+}
