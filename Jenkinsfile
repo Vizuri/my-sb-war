@@ -1,10 +1,10 @@
 //def version, mvnCmd = "mvn -s configuration/cicd-settings-nexus3.xml"
-
-pipeline {
 def mvnCmd = "mvn"
 def version="1.0"
 def app_name="my-sb-war"
 def project="dev-my-sb-war"
+
+pipeline {
 
   agent {
     label 'maven-buildah'
@@ -32,7 +32,7 @@ def project="dev-my-sb-war"
       steps {
             container("buildah") {
                 sh  '''
-                  echo '->> In Buildah <<-'
+                  echo '->> In Buildah ${app_name}-${version <<-'
                   buildah login -u keudy@vizuri.com -p M@dison30 registry.redhat.io
                   buildah login -u kenteudy -p M@dison30 docker.io                 
                   buildah bud -t vizuri/my-sb-war:${version} .
@@ -59,7 +59,7 @@ def project="dev-my-sb-war"
       steps {
         container("buildah") { 
           sh  '''
-            echo '->> In Helm Install <<-'
+            echo '->> In Helm Install ${app_name}-${version <<-'
             helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${project}
             echo '->> Done Helm Install <<-'
           '''	            
