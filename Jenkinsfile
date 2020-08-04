@@ -36,7 +36,8 @@ usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 sh  """
                   echo 'uname=$USERNAME pwd=$PASSWORD'
                   echo '->> In Buildah ${app_name}-${version} <<-'
-                  buildah login -u keudy@vizuri.com -p M@dison30 registry.redhat.io
+                  //buildah login -u keudy@vizuri.com -p M@dison30 registry.redhat.io
+                  buildah login -u $USERNAME -p $PASSWORD registry.redhat.io
                   buildah login -u kenteudy -p M@dison30 docker.io                 
                   buildah bud -t vizuri/my-sb-war:${version} .
                   buildah push vizuri/my-sb-war:${version}
