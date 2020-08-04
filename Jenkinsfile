@@ -14,26 +14,27 @@ pipeline {
   stages {
     stage('Build App') {
       steps {
-        if(BRANCH_NAME ==~ /(release.*)/) {
-            def tokens = BRANCH_NAME.tokenize( '/' )
-            branch_name = tokens[0]
-            branch_release_number = tokens[1]
-            version = branch_release_number
-        }
-        else {
-            sh (
-                    script: "${mvnCmd} -B help:evaluate -Dexpression=project.version | grep -e '^[^\\[]' > release.txt",
-                    returnStdout: true,
-                    returnStatus: false
-               )
-            version = readFile('release.txt').trim()
-            echo "release_number: ${version}"
-        }
         //script {
         //    def pom = readMavenPom file: 'pom.xml'
         //    version = pom.version
         //}
-
+        script {
+	        if(BRANCH_NAME ==~ /(release.*)/) {
+	            def tokens = BRANCH_NAME.tokenize( '/' )
+	            branch_name = tokens[0]
+	            branch_release_number = tokens[1]
+	            version = branch_release_number
+	        }
+	        else {
+	            sh (
+	                    script: "${mvnCmd} -B help:evaluate -Dexpression=project.version | grep -e '^[^\\[]' > release.txt",
+	                    returnStdout: true,
+	                    returnStatus: false
+	               )
+	            version = readFile('release.txt').trim()
+	            echo "release_number: ${version}"
+	        }
+        }
         sh "${mvnCmd} install -DskipTests=true -Dbuild.number=${release_number}"
       }
     }
