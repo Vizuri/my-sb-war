@@ -3,6 +3,7 @@ def mvnCmd = "mvn"
 def version="1.0"
 def app_name="my-sb-war"
 def dev_project="dev-my-sb-war"
+def test_project="test-my-sb-war"
 def quay_host="docker.io"
 def quay_org="vizuri"
 
@@ -41,7 +42,7 @@ pipeline {
  
     stage('Test') {
       steps {
-        sh "${mvnCmd} test -Dbuild.number=${release_number}"
+        sh "${mvnCmd} test -Dbuild.number=${version}"
        // step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
       }
     }
