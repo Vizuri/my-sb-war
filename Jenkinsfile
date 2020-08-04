@@ -80,32 +80,30 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
             }
         }
     }
-	if(BRANCH_NAME ==~ /(release.*)/) {
-	    stage('Deploy DEV') {
-	      steps {
-	        container("buildah") { 
-	          sh  """
-	            echo '->> In Helm Install DEV ${app_name}-${version} <<-'
-	            helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${dev_project}
-	            echo '->> Done Helm Install <<-'
-	          """	            
-	        }
-	      }
-	    }	
-	}
-	else {   
-	    stage('Deploy TEST') {
-	      steps {
-	        container("buildah") { 
-	          sh  """
-	            echo '->> In Helm Install TEST ${app_name}-${version} <<-'
-	            helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${test_project}
-	            echo '->> Done Helm Install <<-'
-	          """	            
-	        }
-	      }
-	    }	
-	} 
+    stage('Deploy DEV') {
+      when(branch 'develop')
+      steps {
+        container("buildah") { 
+          sh  """
+            echo '->> In Helm Install DEV ${app_name}-${version} <<-'
+            helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${dev_project}
+            echo '->> Done Helm Install <<-'
+          """	            
+        }
+      }
+    }	 
+    stage('Deploy TEST') {
+      when(branch 'release/*')
+      steps {
+        container("buildah") { 
+          sh  """
+            echo '->> In Helm Install TEST ${app_name}-${version} <<-'
+            helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${test_project}
+            echo '->> Done Helm Install <<-'
+          """	            
+        }
+      }
+    }	
  
   }
 }
