@@ -31,14 +31,14 @@ pipeline {
     stage('Build Container') {
       steps {
             container("buildah") {
-                sh  '''
-                  echo '->> In Buildah ${app_name}-${version <<-'
+                sh  """
+                  echo '->> In Buildah ${app_name}-${version} <<-'
                   buildah login -u keudy@vizuri.com -p M@dison30 registry.redhat.io
                   buildah login -u kenteudy -p M@dison30 docker.io                 
                   buildah bud -t vizuri/my-sb-war:${version} .
                   buildah push vizuri/my-sb-war:${version}
                   echo '->> Done Buildah <<-'
-                '''
+                """
             }
         }
     }
@@ -46,11 +46,11 @@ pipeline {
     stage('Helm Package') {
       steps {
             container("buildah") {
-                sh  '''
+                sh  """
                   echo '->> In Helm Package <<-'
                   helm package src/main/helm/ --version=${version} --app-version=${version} 
                   echo '->> Done Helm Package <<-'
-                '''
+                """
             }
         }
     }
@@ -58,11 +58,11 @@ pipeline {
     stage('Deploy DEV') {
       steps {
         container("buildah") { 
-          sh  '''
-            echo '->> In Helm Install ${app_name}-${version <<-'
+          sh  """
+            echo '->> In Helm Install ${app_name}-${version} <<-'
             helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${project}
             echo '->> Done Helm Install <<-'
-          '''	            
+          """	            
         }
       }
     } 
