@@ -4,7 +4,6 @@ def version="1.0"
 def app_name="my-sb-war"
 def dev_project="dev-my-sb-war"
 def test_project="test-my-sb-war"
-def deploy_project
 def quay_host="docker.io"
 def quay_org="vizuri"
 
@@ -26,7 +25,6 @@ pipeline {
 	            branch_name = tokens[0]
 	            branch_release_number = tokens[1]
 	            version = branch_release_number
-	            deploy_project=test_project
 	        }
 	        else {
 	            sh (
@@ -36,7 +34,6 @@ pipeline {
 	               )
 	            version = readFile('release.txt').trim()
 	            echo "release_number: ${version}"
-	            deploy_project=dev_project
 	        }
         }
         sh "${mvnCmd} install -DskipTests=true -Dbuild.number=${version}"
