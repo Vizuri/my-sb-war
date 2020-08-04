@@ -81,7 +81,9 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         }
     }
     stage('Deploy DEV') {
-      when(branch 'develop')
+      when {
+        branch 'develop'
+      }
       steps {
         container("buildah") { 
           sh  """
@@ -93,7 +95,9 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
       }
     }	 
     stage('Deploy TEST') {
-      when(branch 'release/*')
+      when {
+        branch 'release/*'
+      }
       steps {
         container("buildah") { 
           sh  """
