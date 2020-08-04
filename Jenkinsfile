@@ -26,7 +26,7 @@ pipeline {
 	            branch_name = tokens[0]
 	            branch_release_number = tokens[1]
 	            version = branch_release_number
-	            deploy_project=${test_project}
+	            deploy_project=test_project
 	        }
 	        else {
 	            sh (
@@ -36,7 +36,7 @@ pipeline {
 	               )
 	            version = readFile('release.txt').trim()
 	            echo "release_number: ${version}"
-	            deploy_project=${dev_project}
+	            deploy_project=dev_project
 	        }
         }
         sh "${mvnCmd} install -DskipTests=true -Dbuild.number=${version}"
