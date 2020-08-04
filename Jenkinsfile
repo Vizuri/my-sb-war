@@ -14,17 +14,32 @@ pipeline {
   stages {
     stage('Build App') {
       steps {
-        script {
-            def pom = readMavenPom file: 'pom.xml'
-            version = pom.version
+        //script {
+        //    def pom = readMavenPom file: 'pom.xml'
+        //    version = pom.version
+        //}
+        if(BRANCH_NAME ==~ /(release.*)/) {
+            def tokens = BRANCH_NAME.tokenize( '/' )
+            branch_name = tokens[0]
+            branch_release_number = tokens[1]
+            version = branch_release_number
         }
-        sh "${mvnCmd} install -DskipTests=true"
+        else {
+            sh (
+                    script: "${mvnCmd} -B help:evaluate -Dexpression=project.version | grep -e '^[^\\[]' > release.txt",
+                    returnStdout: true,
+                    returnStatus: false
+               )
+            version = readFile('release.txt').trim()
+            echo "release_number: ${version}"
+        }
+        sh "${mvnCmd} install -DskipTests=true -Dbuild.number=${release_number}"
       }
     }
  
     stage('Test') {
       steps {
-        sh "${mvnCmd} test"
+        sh "${mvnCmd} test -Dbuild.number=${release_number}"
        // step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
       }
     }
