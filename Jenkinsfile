@@ -1,10 +1,10 @@
 //def version, mvnCmd = "mvn -s configuration/cicd-settings-nexus3.xml"
+
+pipeline {
 def mvnCmd = "mvn"
 def version="1.0"
 def app_name="my-sb-war"
 def project="dev-my-sb-war"
-
-pipeline {
 
   agent {
     label 'maven-buildah'
