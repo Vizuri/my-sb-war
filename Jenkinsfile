@@ -14,10 +14,6 @@ pipeline {
   stages {
     stage('Build App') {
       steps {
-        //script {
-        //    def pom = readMavenPom file: 'pom.xml'
-        //    version = pom.version
-        //}
         if(BRANCH_NAME ==~ /(release.*)/) {
             def tokens = BRANCH_NAME.tokenize( '/' )
             branch_name = tokens[0]
@@ -33,6 +29,11 @@ pipeline {
             version = readFile('release.txt').trim()
             echo "release_number: ${version}"
         }
+        //script {
+        //    def pom = readMavenPom file: 'pom.xml'
+        //    version = pom.version
+        //}
+
         sh "${mvnCmd} install -DskipTests=true -Dbuild.number=${release_number}"
       }
     }
