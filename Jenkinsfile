@@ -33,7 +33,7 @@ pipeline {
       steps {
             container("buildah") {
               withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'rh-credentials',
-usernameVariable: 'RH_USERNAME', passwordVariable: 'RH_PASSWORD', $class: 'UsernamePasswordMultiBinding', credentialsId: 'quay-credentials',
+usernameVariable: 'RH_USERNAME', passwordVariable: 'RH_PASSWORD'], [$class: 'UsernamePasswordMultiBinding', credentialsId: 'quay-credentials',
 usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
                 sh  """
                   echo '->> In Buildah ${app_name}-${version} <<-'
