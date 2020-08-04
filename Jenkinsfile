@@ -4,6 +4,7 @@ def version="1.0"
 def app_name="my-sb-war"
 def dev_project="dev-my-sb-war"
 def test_project="test-my-sb-war"
+def deploy_project
 def quay_host="docker.io"
 def quay_org="vizuri"
 
@@ -25,6 +26,7 @@ pipeline {
 	            branch_name = tokens[0]
 	            branch_release_number = tokens[1]
 	            version = branch_release_number
+	            deploy_project=${test_project}
 	        }
 	        else {
 	            sh (
@@ -34,6 +36,7 @@ pipeline {
 	               )
 	            version = readFile('release.txt').trim()
 	            echo "release_number: ${version}"
+	            deploy_project=${dev_project}
 	        }
         }
         sh "${mvnCmd} install -DskipTests=true -Dbuild.number=${version}"
@@ -57,8 +60,8 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
                   echo '->> In Buildah ${app_name}-${version} <<-'
                   buildah login -u $RH_USERNAME -p $RH_PASSWORD registry.redhat.io
                   buildah login -u $QUAY_USERNAME -p $QUAY_PASSWORD ${quay_host}                 
-                  buildah bud -t ${quay_org}/${app_name}:${version} .
-                  buildah push ${quay_org}/${app_name}:${version}
+                  buildah bud -t ${quay_host}/${quay_org}/${app_name}:${version} .
+                  buildah push ${quay_host}/${quay_org}/${app_name}:${version}
                   echo '->> Done Buildah <<-'
                 """
             }
@@ -83,7 +86,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         container("buildah") { 
           sh  """
             echo '->> In Helm Install ${app_name}-${version} <<-'
-            helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${dev_project}
+            helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${deploy_project}
             echo '->> Done Helm Install <<-'
           """	            
         }
