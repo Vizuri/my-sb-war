@@ -35,7 +35,7 @@ pipeline {
 	            echo "release_number: ${version}"
 	        }
         }
-        sh "${mvnCmd} install -DskipTests=true -Dbuild.number=${release_number}"
+        sh "${mvnCmd} install -DskipTests=true -Dbuild.number=${version}"
       }
     }
  
