@@ -34,7 +34,7 @@ pipeline {
               withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'rh-credentials',
 usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 sh  """
-                  echo uname=$USERNAME pwd=$PASSWORD'
+                  echo 'uname=$USERNAME pwd=$PASSWORD'
                   echo '->> In Buildah ${app_name}-${version} <<-'
                   buildah login -u keudy@vizuri.com -p M@dison30 registry.redhat.io
                   buildah login -u kenteudy -p M@dison30 docker.io                 
