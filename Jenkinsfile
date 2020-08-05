@@ -138,6 +138,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
       sshagent (credentials: ['github-jenkins']) {
           sh  """
             echo '->> In Tag <<-'
+            export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
             ls -a
             cat .git/config
             git config user.name 'Jenkins'
