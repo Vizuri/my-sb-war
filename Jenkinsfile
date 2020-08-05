@@ -103,7 +103,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
    
     stage('Helm Package') {
      when {
-        expression { ENVIRONBMEBNT != 'prod' }
+        expression { ENVIRONMENT != 'prod' }
       }      
       steps {     
         container("buildah") {
@@ -117,7 +117,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
     }
     stage('Deploy') {
       when {
-        expression { ENVIRONBMEBNT != 'prod' }
+        expression { ENVIRONMENT != 'prod' }
       }
       steps {
         container("buildah") { 
