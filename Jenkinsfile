@@ -19,13 +19,12 @@ def getDockerImages() {
 
  //   def slurper = new JsonSlurper()
  //   def json = slurper.parseText(result)
-    def tags = new ArrayList()
+ //   def tags = new ArrayList()
  //   if (json.tags == null || json.tags.size == 0)
 //      tags.add("unable to fetch tags for ${APP_NAME}")
 //    else
 //      tags.addAll(json.tags)
-    tags.add("1.0")
-    tags.add("1.1");
+	def tags = ["1.0", "1.1"]
     return tags.join('\n')
 }
 pipeline {
