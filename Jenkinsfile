@@ -39,7 +39,7 @@ pipeline {
                     // Show the select input modal
                    def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
                                     parameters: [
-                                    choice(name: 'ENVIRONMENT', choices: ['dev','test', 'perf'].join('\n'), description: 'Please select the Environment'),
+                                    choice(name: 'ENVIRONMENT', choices: ['dev','test', 'perf', 'prod'].join('\n'), description: 'Please select the Environment'),
                                     choice(name: 'IMAGE_TAG', choices: getDockerImages(), description: 'Available Docker Images')]
                     env.ENVIRONMENT = INPUT_PARAMS.ENVIRONMENT
                     env.IMAGE_TAG = INPUT_PARAMS.IMAGE_TAG
@@ -103,7 +103,10 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
    
     stage('Helm Package') {
       steps {
-            container("buildah") {
+	     when {
+	        expression { ENVIRONBMEBNT != 'prod' }
+	      }            
+	      container("buildah") {
                 sh  """
                   echo '->> In Helm Package <<-'
                   helm package src/main/helm/ --version=${version} --app-version=${version} 
@@ -113,9 +116,9 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         }
     }
     stage('Deploy') {
-      //when {
-      //  branch 'develop'
-      //}
+      when {
+        expression { ENVIRONBMEBNT != 'prod' }
+      }
       steps {
         container("buildah") { 
           sh  """
@@ -126,6 +129,19 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         }
       }
     }	 	
- 
+    
+    stage('Tag') {
+      when {
+        expression { ENVIRONMENT == 'prod' }
+      }
+      steps {
+          sh  """
+            echo '->> In Tag <<-'
+            git tag -a v2.3.0
+            sh('git push --tags')
+            echo '->> Done Tag <<-'
+          """	            
+      } 
+    }    
   }
 }
