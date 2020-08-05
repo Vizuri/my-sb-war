@@ -135,6 +135,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         expression { ENVIRONMENT == 'prod' }
       }
       steps {
+      sshagent (credentials: ['github-jenkins']) {
           sh  """
             echo '->> In Tag <<-'
             git config user.name 'Jenkins'
@@ -144,6 +145,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
             echo '->> Done Tag <<-'
           """	            
       } 
+      }
     }    
   }
 }
