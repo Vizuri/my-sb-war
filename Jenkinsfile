@@ -142,7 +142,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
             git config user.name 'Jenkins'
 			git config user.email 'jenkins@upenn.edu'
 			git status
-            git tag -a v2.3.0 -m'v2.3.0'
+            git tag -a v2.3.0 -m"v2.3.0"
             git push --tags
             echo '->> Done Tag <<-'
           """	            
