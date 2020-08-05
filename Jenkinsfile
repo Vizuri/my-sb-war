@@ -41,7 +41,7 @@ pipeline {
                     // Show the select input modal
                    def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
                                     parameters: [
-                                    choice(name: 'ENVIRONMENT', choices: ['dev','qa'].join('\n'), description: 'Please select the Environment'),
+                                    choice(name: 'ENVIRONMENT', choices: ['dev','test', 'perf'].join('\n'), description: 'Please select the Environment'),
                                     choice(name: 'IMAGE_TAG', choices: getDockerImages(), description: 'Available Docker Images')]
                     env.ENVIRONMENT = INPUT_PARAMS.ENVIRONMENT
                     env.IMAGE_TAG = INPUT_PARAMS.IMAGE_TAG
@@ -114,34 +114,20 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
             }
         }
     }
-    stage('Deploy DEV') {
-      when {
-        branch 'develop'
-      }
+    stage('Deploy') {
+      //when {
+      //  branch 'develop'
+      //}
       steps {
         container("buildah") { 
           sh  """
             echo '->> In Helm Install DEV ${app_name}-${version} <<-'
-            helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${dev_project}
+            helm upgrade --install --set env=${ENVIRONMENT} ${app_name} ${app_name}-${version}.tgz --namespace=develop
             echo '->> Done Helm Install <<-'
           """	            
         }
       }
-    }	 
-    stage('Deploy TEST') {
-      when {
-        branch 'release/*'
-      }
-      steps {
-        container("buildah") { 
-          sh  """
-            echo '->> In Helm Install TEST ${app_name}-${version} <<-'
-            helm upgrade --install ${app_name} ${app_name}-${version}.tgz --namespace=${test_project}
-            echo '->> Done Helm Install <<-'
-          """	            
-        }
-      }
-    }	
+    }	 	
  
   }
 }
