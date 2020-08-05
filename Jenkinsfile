@@ -142,6 +142,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
             cat .git/config
             git config user.name 'Jenkins'
 			git config user.email 'jenkins@upenn.edu'
+			git pull
 			git status
             git tag -a v2.3.0 -m"v2.3.0"
             git tag
