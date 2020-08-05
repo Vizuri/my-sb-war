@@ -3,8 +3,6 @@ import groovy.json.JsonSlurper
 def mvnCmd = "mvn"
 def version="1.0"
 def app_name="my-sb-war"
-def dev_project="dev-my-sb-war"
-def test_project="test-my-sb-war"
 def quay_host="docker.io"
 def quay_org="vizuri"
 
@@ -122,7 +120,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         container("buildah") { 
           sh  """
             echo '->> In Helm Install DEV ${app_name}-${version} <<-'
-            helm upgrade --install --set env=${ENVIRONMENT} ${app_name} ${app_name}-${version}.tgz --namespace=default
+            helm upgrade --install --set env=${ENVIRONMENT} ${ENVIRONMENT}-${app_name} ${app_name}-${version}.tgz --namespace=default
             echo '->> Done Helm Install <<-'
           """	            
         }
