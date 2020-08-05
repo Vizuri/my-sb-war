@@ -102,18 +102,18 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
     }
    
     stage('Helm Package') {
-      steps {
-	     when {
-	        expression { ENVIRONBMEBNT != 'prod' }
-	      }            
-	      container("buildah") {
-                sh  """
-                  echo '->> In Helm Package <<-'
-                  helm package src/main/helm/ --version=${version} --app-version=${version} 
-                  echo '->> Done Helm Package <<-'
-                """
-            }
+     when {
+        expression { ENVIRONBMEBNT != 'prod' }
+      }      
+      steps {     
+        container("buildah") {
+            sh  """
+              echo '->> In Helm Package <<-'
+              helm package src/main/helm/ --version=${version} --app-version=${version} 
+              echo '->> Done Helm Package <<-'
+            """
         }
+      }
     }
     stage('Deploy') {
       when {
