@@ -139,7 +139,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
           sh  """
             echo '->> In Tag <<-'
             ls -a
-            cat .git./config
+            cat .git/config
             git config user.name 'Jenkins'
 			git config user.email 'jenkins@upenn.edu'
 			git status
