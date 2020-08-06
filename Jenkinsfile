@@ -23,24 +23,7 @@ def nextVersionFromGit(scope) {
     }
     nextVersion
 }
-def getDockerImages() {
-    //final API_KEY = "FOOBARAPIKEY"
-   // final REPO_NAME = "service-docker"
-  //  final APP_NAME = "myapp"
 
-  //  def cmd = [ 'bash', '-c', "curl -H 'X-JFrog-Art-Api: ${API_KEY}' https://artifactory.acme.co/artifactory/api/docker/${REPO_NAME}/v2/${APP_NAME}/tags/list".toString()]
- //   def result = cmd.execute().text
-
- //   def slurper = new JsonSlurper()
- //   def json = slurper.parseText(result)
- //   def tags = new ArrayList()
- //   if (json.tags == null || json.tags.size == 0)
-//      tags.add("unable to fetch tags for ${APP_NAME}")
-//    else
-//      tags.addAll(json.tags)
-	def tags = ["1.0", "1.1"]
-    return tags.join('\n')
-}
 pipeline {
 
   agent {
@@ -140,7 +123,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         container("buildah") { 
          sh  """
            echo '->> In Uninstall <<-'
-           helm uninstall ${ENVIRONMENT}-${app_name} --namespace=default
+           //helm uninstall ${ENVIRONMENT}-${app_name} --namespace=default
            sleep 20
            echo '->> Done Uninstall <<-'
          """	
