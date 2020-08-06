@@ -8,16 +8,18 @@
 		<version>2.3.1.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	
+	<properties>
+		<java.version>11</java.version>
+		<build.number>0.0.1-SNAPSHOT</build.number>
+	</properties>
 	<groupId>com.vizuri.demo</groupId>
 	<artifactId>my-sb-war</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${build.number}</version>
 	<packaging>war</packaging>
 	<name>my-sb-war</name>
 	<description>Demo project for Spring Boot Packaged as WAR</description>
 
-	<properties>
-		<java.version>1.8</java.version>
-	</properties>
 
 	<dependencies>
 		<dependency>

@@ -1,11 +1,13 @@
-{{- $fullName := include "person-service.fullname" . -}}
+{{- $fullName := .Chart.Name -}}
 {{- $svcPort := .Values.service.port -}}
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: {{ $fullName }}
+  namespace: {{ .Values.env }}-{{ .Chart.Name }}
   labels:
-    {{- include "person-service.labels" . | nindent 4 }}
+    app.kubernetes.io/instance: {{ $fullName }}
+    app.kubernetes.io/name: {{ $fullName }}
 spec:
   port:
     targetPort: {{ $svcPort }}
