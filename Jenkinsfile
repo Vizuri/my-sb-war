@@ -9,6 +9,7 @@ def quay_org="vizuri"
 def nextVersionFromGit(scope) {
     def latestVersion = sh returnStdout: true, script: 'git describe --tags "$(git rev-list --tags=*.*.* --max-count=1 2> /dev/null)" 2> /dev/null || echo 0.0.0'
     def (major, minor, patch) = latestVersion.tokenize('.').collect { it.toInteger() }
+    
     def nextVersion
     switch (scope) {
         case 'major':
@@ -36,7 +37,6 @@ pipeline {
             echo '->> In Checkout <<-'
             echo "Branch Name ${BRANCH_NAME}"
             git checkout ${BRANCH_NAME}
-            git branch
             echo '->> Done Checkout <<-'
           """
 		}
