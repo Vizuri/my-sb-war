@@ -29,16 +29,17 @@ def nextVersionFromGit(scope) {
 pipeline {
 
   agent {
-    label 'maven-buildah'
+    none
   }
   stages {
       stage("Gather Deployment Parameters") {
         agent {
-            label 'master'
+            none
         }
         steps {
             timeout(time: 30, unit: 'SECONDS') {
                 script {
+                	echo "Prompting"
                     // Show the select input modal
                     def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
                                     parameters: [
