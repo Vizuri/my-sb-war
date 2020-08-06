@@ -11,11 +11,10 @@
 	
 	<properties>
 		<java.version>11</java.version>
-		<build.number>0.0.1-SNAPSHOT</build.number>
 	</properties>
 	<groupId>com.vizuri.demo</groupId>
 	<artifactId>my-sb-war</artifactId>
-	<version>${build.number}</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>my-sb-war</name>
 	<description>Demo project for Spring Boot Packaged as WAR</description>

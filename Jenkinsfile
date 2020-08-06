@@ -23,31 +23,27 @@ def nextVersionFromGit(scope) {
     }
     nextVersion
 }
-def getDockerImages() {
-    //final API_KEY = "FOOBARAPIKEY"
-   // final REPO_NAME = "service-docker"
-  //  final APP_NAME = "myapp"
 
-  //  def cmd = [ 'bash', '-c', "curl -H 'X-JFrog-Art-Api: ${API_KEY}' https://artifactory.acme.co/artifactory/api/docker/${REPO_NAME}/v2/${APP_NAME}/tags/list".toString()]
- //   def result = cmd.execute().text
-
- //   def slurper = new JsonSlurper()
- //   def json = slurper.parseText(result)
- //   def tags = new ArrayList()
- //   if (json.tags == null || json.tags.size == 0)
-//      tags.add("unable to fetch tags for ${APP_NAME}")
-//    else
-//      tags.addAll(json.tags)
-	def tags = ["1.0", "1.1"]
-    return tags.join('\n')
-}
 pipeline {
 
   agent {
     label 'maven-buildah'
   }
   stages {
-  
+      stage("Checkout") {
+        steps {
+          
+	      checkout([$class: 'GitSCM', 
+	        branches: [[name: '*/develop']], 
+	        doGenerateSubmoduleConfigurations: false, 
+	        extensions: [], 
+	        submoduleCfg: [], 
+	        userRemoteConfigs: [[]]
+		  ])
+		}
+      }
+    
+
       stage("Gather Deployment Parameters") {
         steps {
             timeout(time: 30, unit: 'SECONDS') {
@@ -76,6 +72,7 @@ pipeline {
         script {
 	        if(ENVIRONMENT == 'prod') {
 	            version = nextVersionFromGit(RELEASE_SCOPE)
+	            sh "mvn versions:set -DnewVersion=${version}"
 	            echo "release_number: ${version}"
 	        }
 	        else {
@@ -87,14 +84,14 @@ pipeline {
 	            version = readFile('release.txt').trim()
 	            echo "release_number: ${version}"
 	        }
-        }
-        sh "${mvnCmd} install -DskipTests=true -Dbuild.number=${version}"
+        }     
+        sh "${mvnCmd} install -DskipTests=true"
       }
     }
  
     stage('Test') {
       steps {
-        sh "${mvnCmd} test -Dbuild.number=${version}"
+        sh "${mvnCmd} test"
        // step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
       }
     }
@@ -134,13 +131,13 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
     }
     stage('Uninstall') {
       when {
-        expression { return UNINSTALL }
+        expression { UNINSTALL == 'true' }
       }
       steps {
         container("buildah") { 
          sh  """
            echo '->> In Uninstall <<-'
-           helm uninstall ${ENVIRONMENT}-${app_name} --namespace=default
+           #helm uninstall ${ENVIRONMENT}-${app_name} --namespace=default
            sleep 20
            echo '->> Done Uninstall <<-'
          """	
