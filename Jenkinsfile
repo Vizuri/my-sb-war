@@ -28,11 +28,35 @@ def nextVersionFromGit(scope) {
 
 pipeline {
 
-  agent {
-    label 'maven-buildah'
-  }
+//  agent {
+//    label 'maven-buildah'
+//  }
   stages {
-      stage("Checkout") {
+
+    
+  node {
+	   stage("Gather Deployment Parameters") {
+	        steps {
+	            timeout(time: 30, unit: 'SECONDS') {
+	                script {
+	                    // Show the select input modal
+	                    def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
+	                                    parameters: [
+	                                    choice(name: 'ENVIRONMENT', choices: ['dev','test', 'perf', 'prod'].join('\n'), description: 'Please select the Environment'),
+	                                    choice(name: 'RELEASE_SCOPE', choices: ['major','minor', 'patch'].join('\n'), description: 'Release Scope'),
+	                                    booleanParam(name: 'UNINSTALL', defaultValue: false, description: 'Perform Uninstall')]
+	                    env.ENVIRONMENT = INPUT_PARAMS.ENVIRONMENT
+	                    env.RELEASE_SCOPE = INPUT_PARAMS.RELEASE_SCOPE
+	                    env.UNINSTALL = INPUT_PARAMS.UNINSTALL
+	                    echo "UNINSTALL: ${UNINSTALL}"
+	                }
+	            }
+	        }
+	    }  
+    }
+    
+   node ('maven-buildah') {   
+    stage("Checkout") {
         steps {
           sshagent (credentials: ['github-jenins']) {
 	          sh  """
@@ -44,28 +68,7 @@ pipeline {
 	          """
 			}
 		}
-      }
-    
-
-      stage("Gather Deployment Parameters") {
-        steps {
-            timeout(time: 30, unit: 'SECONDS') {
-                script {
-                    // Show the select input modal
-                    def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
-                                    parameters: [
-                                    choice(name: 'ENVIRONMENT', choices: ['dev','test', 'perf', 'prod'].join('\n'), description: 'Please select the Environment'),
-                                    choice(name: 'RELEASE_SCOPE', choices: ['major','minor', 'patch'].join('\n'), description: 'Release Scope'),
-                                    booleanParam(name: 'UNINSTALL', defaultValue: false, description: 'Perform Uninstall')]
-                    env.ENVIRONMENT = INPUT_PARAMS.ENVIRONMENT
-                    env.RELEASE_SCOPE = INPUT_PARAMS.RELEASE_SCOPE
-                    env.UNINSTALL = INPUT_PARAMS.UNINSTALL
-                    echo "UNINSTALL: ${UNINSTALL}"
-                }
-            }
-        }
-    }  
-  
+      }  
     stage('Build App') {
       steps {
         //script {
@@ -179,6 +182,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
           """	            
       } 
       }
-    }    
+    }  
+    }  
   }
 }
