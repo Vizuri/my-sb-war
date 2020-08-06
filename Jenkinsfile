@@ -56,9 +56,9 @@ pipeline {
                     def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
                                     parameters: [
                                     choice(name: 'ENVIRONMENT', choices: ['dev','test', 'perf', 'prod'].join('\n'), description: 'Please select the Environment'),
-                                    choice(name: 'IMAGE_TAG', choices: getDockerImages(), description: 'Available Docker Images')]
+                                    choice(name: 'RELEASE_SCOPE', choices: ['dev','test', 'perf', 'prod'].join('\n'), description: 'Release Scope')]
                     env.ENVIRONMENT = INPUT_PARAMS.ENVIRONMENT
-                    env.IMAGE_TAG = INPUT_PARAMS.IMAGE_TAG
+                    env.RELEASE_SCOPE = INPUT_PARAMS.RELEASE_SCOPE
                 }
             }
         }
@@ -72,7 +72,7 @@ pipeline {
         //}
         script {
 	        if(ENVIRONMENT == 'prod') {
-	            version = nextVersionFromGit('patch')
+	            version = nextVersionFromGit(RELEASE_SCOPE)
 	            echo "release_number: ${version}"
 	        }
 	        else {
@@ -155,7 +155,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
             git config --global user.email 'jenkins@upenn.edu'
   			git config --global user.name 'Jenkins'
             
-            git tag -a ${version}-m 'Jenkins Tag'
+            git tag -a ${version} -m 'Jenkins Tag'
             git push --tags
             echo '->> Done Tag <<-'
           """	            
