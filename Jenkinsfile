@@ -31,10 +31,11 @@ pipeline {
 //  agent {
 //    label 'maven-buildah'
 //  }
-  stages {
+  
 
     
   node {
+    stages {
 	   stage("Gather Deployment Parameters") {
 	        steps {
 	            timeout(time: 30, unit: 'SECONDS') {
@@ -52,10 +53,12 @@ pipeline {
 	                }
 	            }
 	        }
-	    }  
+	    } 
+	   } 
     }
     
-   node ('maven-buildah') {   
+   node ('maven-buildah') { 
+   stages {  
     stage("Checkout") {
         steps {
           sshagent (credentials: ['github-jenins']) {
