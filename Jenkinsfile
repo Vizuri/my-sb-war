@@ -121,8 +121,10 @@ pipeline {
 
     stage('Build Container') {
       agent {
+        node {
             label 'maven-buildah'
             reuseNode true
+        }
       }
       steps {
             container("buildah") {
