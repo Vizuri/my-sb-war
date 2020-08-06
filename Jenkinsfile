@@ -72,7 +72,7 @@ pipeline {
         //}
         script {
 	        if(ENVIRONMENT == 'prod') {
-	            version = nextVersionFromGit()
+	            version = nextVersionFromGit('patch')
 	            echo "release_number: ${version}"
 	        }
 	        else {
