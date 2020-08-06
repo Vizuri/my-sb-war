@@ -28,14 +28,10 @@ def nextVersionFromGit(scope) {
 
 pipeline {
 
-  agent {
-    none
-  }
+  agent none
   stages {
       stage("Gather Deployment Parameters") {
-        agent {
-            none
-        }
+        agent none
         steps {
             timeout(time: 30, unit: 'SECONDS') {
                 script {
