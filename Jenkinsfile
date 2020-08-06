@@ -131,20 +131,26 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         }
       }
     }
+    stage('Uninstall') {
+      when {
+        expression { UNINSTALL == true }
+      }
+      steps {
+        container("buildah") { 
+         sh  """
+           echo '->> In Uninstall <<-'
+           helm uninstall ${ENVIRONMENT}-${app_name} --namespace=default
+           echo '->> Done Uninstall <<-'
+         """	
+	    }
+      }
+    }	
     stage('Deploy') {
       when {
         expression { ENVIRONMENT != 'prod' }
       }
       steps {
         container("buildah") { 
-           if( UNINSTALL ) {
-	         sh  """
-               echo '->> In Uninstall <<-'
-               helm uninstall ${ENVIRONMENT}-${app_name} --namespace=default
-               echo '->> Done Uninstall <<-'
-             """	
-	      }
-          
           sh  """
             echo '->> In Helm Install DEV ${app_name}-${version} <<-'
             helm upgrade --install --set env=${ENVIRONMENT} ${ENVIRONMENT}-${app_name} ${app_name}-${version}.tgz --namespace=default
