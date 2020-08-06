@@ -61,6 +61,7 @@ pipeline {
                     env.ENVIRONMENT = INPUT_PARAMS.ENVIRONMENT
                     env.RELEASE_SCOPE = INPUT_PARAMS.RELEASE_SCOPE
                     env.UNINSTALL = INPUT_PARAMS.UNINSTALL
+                    echo "UNINSTALL: ${UNINSTALL}"
                 }
             }
         }
