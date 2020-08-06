@@ -134,7 +134,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
     }
     stage('Uninstall') {
       when {
-        expression { UNINSTALL }
+        expression { return UNINSTALL }
       }
       steps {
         container("buildah") { 
