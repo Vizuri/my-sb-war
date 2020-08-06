@@ -34,6 +34,8 @@ pipeline {
         steps {
           sh  """
             echo '->> In Checkout <<-'
+            echo "Branch Name ${BRANCH_NAME}"
+            git checkout ${BRANCH_NAME}
             git branch
             echo '->> Done Checkout <<-'
           """
