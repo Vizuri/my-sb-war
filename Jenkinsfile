@@ -34,13 +34,15 @@ pipeline {
   stages {
       stage("Checkout") {
         steps {
-          sh  """
-            echo '->> In Checkout <<-'
-            echo "Branch Name ${BRANCH_NAME}"
-            git checkout ${BRANCH_NAME}
-            git fetch --tags
-            echo '->> Done Checkout <<-'
-          """
+          sshagent (credentials: ['github-jenins']) {
+	          sh  """
+	            echo '->> In Checkout <<-'
+	            echo "Branch Name ${BRANCH_NAME}"
+	            git checkout ${BRANCH_NAME}
+	            git fetch --tags
+	            echo '->> Done Checkout <<-'
+	          """
+			}
 		}
       }
     
