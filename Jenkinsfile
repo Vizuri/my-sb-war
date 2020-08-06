@@ -59,6 +59,7 @@ pipeline {
         script {
 	        if(ENVIRONMENT == 'prod') {
 	            version = nextVersionFromGit(RELEASE_SCOPE)
+	            sh "mvn versions:set -DnewVersion=${version}"
 	            echo "release_number: ${version}"
 	        }
 	        else {
@@ -70,14 +71,14 @@ pipeline {
 	            version = readFile('release.txt').trim()
 	            echo "release_number: ${version}"
 	        }
-        }
-        sh "${mvnCmd} install -DskipTests=true -Dbuild.number=${version}"
+        }     
+        sh "${mvnCmd} install -DskipTests=true"
       }
     }
  
     stage('Test') {
       steps {
-        sh "${mvnCmd} test -Dbuild.number=${version}"
+        sh "${mvnCmd} test"
        // step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
       }
     }
@@ -123,7 +124,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         container("buildah") { 
          sh  """
            echo '->> In Uninstall <<-'
-           //helm uninstall ${ENVIRONMENT}-${app_name} --namespace=default
+           #helm uninstall ${ENVIRONMENT}-${app_name} --namespace=default
            sleep 20
            echo '->> Done Uninstall <<-'
          """	
