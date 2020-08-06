@@ -32,14 +32,13 @@ pipeline {
   stages {
       stage("Checkout") {
         steps {
-          
-	      checkout([$class: 'GitSCM', 
-	        branches: [[name: '*/develop']], 
-	        doGenerateSubmoduleConfigurations: false, 
-	        extensions: [], 
-	        submoduleCfg: [], 
-	        userRemoteConfigs: [[]]
-		  ])
+          sh  """
+            echo '->> In Checkout <<-'
+            echo "Branch Name ${BRANCH_NAME}"
+            git checkout ${BRANCH_NAME}
+            git branch
+            echo '->> Done Checkout <<-'
+          """
 		}
       }
     
