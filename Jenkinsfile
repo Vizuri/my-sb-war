@@ -55,6 +55,9 @@ pipeline {
       } 
   
       stage("Checkout") {
+        agent {
+            label 'maven-buildah'
+        }
         steps {
           sshagent (credentials: ['github-jenins']) {
 	          sh  """
@@ -72,6 +75,9 @@ pipeline {
  
   
     stage('Build App') {
+        agent {
+            label 'maven-buildah'
+        }
       steps {
         //script {
         //    def pom = readMavenPom file: 'pom.xml'
@@ -98,6 +104,9 @@ pipeline {
     }
  
     stage('Test') {
+        agent {
+            label 'maven-buildah'
+        }
       steps {
         sh "${mvnCmd} test"
        // step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
@@ -105,6 +114,9 @@ pipeline {
     }
 
     stage('Build Container') {
+      agent {
+            label 'maven-buildah'
+      }
       steps {
             container("buildah") {
               withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'rh-credentials',
@@ -127,6 +139,9 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
      when {
         expression { ENVIRONMENT != 'prod' }
       }      
+        agent {
+            label 'maven-buildah'
+        }
       steps {     
         container("buildah") {
             sh  """
@@ -141,6 +156,9 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
       when {
         expression { UNINSTALL == 'true' }
       }
+        agent {
+            label 'maven-buildah'
+        }
       steps {
         container("buildah") { 
          sh  """
@@ -156,6 +174,9 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
       when {
         expression { ENVIRONMENT != 'prod' }
       }
+        agent {
+            label 'maven-buildah'
+        }
       steps {
         container("buildah") { 
           sh  """
@@ -171,6 +192,9 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
       when {
         expression { ENVIRONMENT == 'prod' }
       }
+        agent {
+            label 'maven-buildah'
+        }
       steps {
       sshagent (credentials: ['github-jenins']) {
           sh  """
