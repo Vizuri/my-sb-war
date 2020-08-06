@@ -137,7 +137,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
       }
       steps {
         container("buildah") { 
-           if(UNINSTALL') {
+           if( UNINSTALL ) {
 	         sh  """
                echo '->> In Uninstall <<-'
                helm uninstall ${ENVIRONMENT}-${app_name} --namespace=default
