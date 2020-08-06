@@ -53,8 +53,10 @@ pipeline {
   
       stage("Checkout") {
         agent {
+          node {
             label 'maven-buildah'
             reuseNode true
+          }
         }
         steps {
           sshagent (credentials: ['github-jenins']) {
@@ -74,8 +76,10 @@ pipeline {
   
     stage('Build App') {
         agent {
+          node {
             label 'maven-buildah'
             reuseNode true
+          }
         }
       steps {
         //script {
@@ -104,8 +108,10 @@ pipeline {
  
     stage('Test') {
         agent {
+          node {
             label 'maven-buildah'
             reuseNode true
+          }
         }
       steps {
         sh "${mvnCmd} test"
@@ -141,8 +147,10 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         expression { ENVIRONMENT != 'prod' }
       }      
         agent {
+          node {
             label 'maven-buildah'
             reuseNode true
+          }
         }
       steps {     
         container("buildah") {
@@ -159,8 +167,10 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         expression { UNINSTALL == 'true' }
       }
         agent {
+          node {
             label 'maven-buildah'
             reuseNode true
+          }
         }
       steps {
         container("buildah") { 
@@ -178,8 +188,10 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         expression { ENVIRONMENT != 'prod' }
       }
         agent {
+          node {
             label 'maven-buildah'
             reuseNode true
+          }
         }
       steps {
         container("buildah") { 
@@ -197,8 +209,10 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         expression { ENVIRONMENT == 'prod' }
       }
         agent {
+          node {
             label 'maven-buildah'
             reuseNode true
+          }
         }
       steps {
       sshagent (credentials: ['github-jenins']) {
