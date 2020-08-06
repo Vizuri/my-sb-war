@@ -56,7 +56,7 @@ pipeline {
                     def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
                                     parameters: [
                                     choice(name: 'ENVIRONMENT', choices: ['dev','test', 'perf', 'prod'].join('\n'), description: 'Please select the Environment'),
-                                    choice(name: 'RELEASE_SCOPE', choices: ['dev','test', 'perf', 'prod'].join('\n'), description: 'Release Scope')]
+                                    choice(name: 'RELEASE_SCOPE', choices: ['major','minor', 'patch'].join('\n'), description: 'Release Scope')]
                     env.ENVIRONMENT = INPUT_PARAMS.ENVIRONMENT
                     env.RELEASE_SCOPE = INPUT_PARAMS.RELEASE_SCOPE
                 }
