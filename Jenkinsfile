@@ -30,7 +30,20 @@ pipeline {
     label 'maven-buildah'
   }
   stages {
-  
+      stage("Checkout") {
+        steps {
+          
+	      checkout([$class: 'GitSCM', 
+	        branches: [[name: '*/develop']], 
+	        doGenerateSubmoduleConfigurations: false, 
+	        extensions: [], 
+	        submoduleCfg: [], 
+	        userRemoteConfigs: [[]]
+		  ])
+		}
+      }
+    
+
       stage("Gather Deployment Parameters") {
         steps {
             timeout(time: 30, unit: 'SECONDS') {
