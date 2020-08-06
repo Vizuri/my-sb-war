@@ -6,7 +6,23 @@ def app_name="my-sb-war"
 def quay_host="docker.io"
 def quay_org="vizuri"
 
-
+def nextVersionFromGit(scope) {
+    def latestVersion = sh returnStdout: true, script: 'git describe --tags "$(git rev-list --tags=*.*.* --max-count=1 2> /dev/null)" 2> /dev/null || echo 0.0.0'
+    def (major, minor, patch) = latestVersion.tokenize('.').collect { it.toInteger() }
+    def nextVersion
+    switch (scope) {
+        case 'major':
+            nextVersion = "${major + 1}.0.0"
+            break
+        case 'minor':
+            nextVersion = "${major}.${minor + 1}.0"
+            break
+        case 'patch':
+            nextVersion = "${major}.${minor}.${patch + 1}"
+            break
+    }
+    nextVersion
+}
 def getDockerImages() {
     //final API_KEY = "FOOBARAPIKEY"
    // final REPO_NAME = "service-docker"
@@ -37,7 +53,7 @@ pipeline {
             timeout(time: 30, unit: 'SECONDS') {
                 script {
                     // Show the select input modal
-                   def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
+                    def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
                                     parameters: [
                                     choice(name: 'ENVIRONMENT', choices: ['dev','test', 'perf', 'prod'].join('\n'), description: 'Please select the Environment'),
                                     choice(name: 'IMAGE_TAG', choices: getDockerImages(), description: 'Available Docker Images')]
@@ -55,11 +71,9 @@ pipeline {
         //    version = pom.version
         //}
         script {
-	        if(BRANCH_NAME ==~ /(release.*)/) {
-	            def tokens = BRANCH_NAME.tokenize( '/' )
-	            branch_name = tokens[0]
-	            branch_release_number = tokens[1]
-	            version = branch_release_number
+	        if(ENVIRONMENT == 'prod') {
+	            version = nextVersionFromGit()
+	            echo "release_number: ${version}"
 	        }
 	        else {
 	            sh (
