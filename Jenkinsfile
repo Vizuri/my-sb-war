@@ -140,6 +140,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
          sh  """
            echo '->> In Uninstall <<-'
            helm uninstall ${ENVIRONMENT}-${app_name} --namespace=default
+           sleep 20
            echo '->> Done Uninstall <<-'
          """	
 	    }
