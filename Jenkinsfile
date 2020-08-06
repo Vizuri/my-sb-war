@@ -56,9 +56,11 @@ pipeline {
                     def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
                                     parameters: [
                                     choice(name: 'ENVIRONMENT', choices: ['dev','test', 'perf', 'prod'].join('\n'), description: 'Please select the Environment'),
-                                    choice(name: 'RELEASE_SCOPE', choices: ['major','minor', 'patch'].join('\n'), description: 'Release Scope')]
+                                    choice(name: 'RELEASE_SCOPE', choices: ['major','minor', 'patch'].join('\n'), description: 'Release Scope'),
+                                    booleanParam(name: 'UNINSTALL', defaultValue: false, description: 'Perform Uninstall')]
                     env.ENVIRONMENT = INPUT_PARAMS.ENVIRONMENT
                     env.RELEASE_SCOPE = INPUT_PARAMS.RELEASE_SCOPE
+                    env.UNINSTALL = INPUT_PARAMS.UNINSTALL
                 }
             }
         }
@@ -135,6 +137,14 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
       }
       steps {
         container("buildah") { 
+           if(UNINSTALL') {
+	         sh  """
+               echo '->> In Uninstall <<-'
+               helm uninstall ${ENVIRONMENT}-${app_name} --namespace=default
+               echo '->> Done Uninstall <<-'
+             """	
+	      }
+          
           sh  """
             echo '->> In Helm Install DEV ${app_name}-${version} <<-'
             helm upgrade --install --set env=${ENVIRONMENT} ${ENVIRONMENT}-${app_name} ${app_name}-${version}.tgz --namespace=default
