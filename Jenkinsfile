@@ -83,6 +83,9 @@ pipeline {
     }
 
     stage('Build Container') {
+      when {
+        expression { ENVIRONMENT != 'prod' }
+      }
       steps {
             container("buildah") {
               withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'rh-credentials',
@@ -145,7 +148,7 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
 			git config user.email 'jenkins@upenn.edu'
 			git pull
 			git status
-            git tag -a v2.3.0 -m "v2.3.0"
+            git tag -a v2.3.0 -m 'v2.3.0'
             git tag
             git push --tags
             echo '->> Done Tag <<-'
