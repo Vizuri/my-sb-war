@@ -138,15 +138,14 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
         expression { ENVIRONMENT == 'prod' }
       }
       steps {
-      sshagent (credentials: ['github-jenkins']) {
+      sshagent (credentials: ['github-jenins']) {
           sh  """
             echo '->> In Tag <<-'
-            export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+            //export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
             ls -a
             cat .git/config
             git config user.name 'Jenkins'
 			git config user.email 'jenkins@upenn.edu'
-			git pull
 			git status
             git tag -a v2.3.0 -m 'v2.3.0'
             git tag
