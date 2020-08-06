@@ -83,9 +83,6 @@ pipeline {
     }
 
     stage('Build Container') {
-      when {
-        expression { ENVIRONMENT != 'prod' }
-      }
       steps {
             container("buildah") {
               withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'rh-credentials',
