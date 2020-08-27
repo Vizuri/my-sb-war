@@ -6,6 +6,11 @@ metadata:
   labels:
     app.kubernetes.io/instance: {{ .Chart.Name }}
     app.kubernetes.io/name: {{ .Chart.Name }}
+    discovery.3scale.net: 'true'
+  annotations:
+    discovery.3scale.net/port: '8080'
+    discovery.3scale.net/scheme: http
+    discovery.3scale.net/description-path: 'v2/api-docs'
 spec:
   type: {{ .Values.service.type }}
   ports:

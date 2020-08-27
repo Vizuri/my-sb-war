@@ -31,7 +31,7 @@ public class PersonResource {
     @GetMapping()
     public Iterable<Person> findAllPeople() throws Exception {
     	logger.info("In findAllPeople:");
-    	
+
     	return personService.findAllPeople();
     }
 

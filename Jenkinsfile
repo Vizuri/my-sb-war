@@ -28,36 +28,11 @@ def nextVersionFromGit(scope) {
 
 pipeline {
 
-  agent none
+  agent {
+    label 'maven-buildah'
+  }
   stages {
-      stage("Gather Deployment Parameters") {
-        agent none
-        steps {
-            timeout(time: 30, unit: 'SECONDS') {
-                script {
-                	echo "Prompting"
-                    // Show the select input modal
-                    def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
-                                    parameters: [
-                                    choice(name: 'ENVIRONMENT', choices: ['dev','test', 'perf', 'prod'].join('\n'), description: 'Please select the Environment'),
-                                    choice(name: 'RELEASE_SCOPE', choices: ['major','minor', 'patch'].join('\n'), description: 'Release Scope'),
-                                    booleanParam(name: 'UNINSTALL', defaultValue: false, description: 'Perform Uninstall')]
-                    env.ENVIRONMENT = INPUT_PARAMS.ENVIRONMENT
-                    env.RELEASE_SCOPE = INPUT_PARAMS.RELEASE_SCOPE
-                    env.UNINSTALL = INPUT_PARAMS.UNINSTALL
-                    echo "UNINSTALL: ${UNINSTALL}"
-                }
-            }
-        }
-      } 
-  
       stage("Checkout") {
-        agent {
-          node {
-            label 'maven-buildah'
-            reuseNode true
-          }
-        }
         steps {
           sshagent (credentials: ['github-jenins']) {
 	          sh  """
@@ -72,15 +47,26 @@ pipeline {
       }
     
 
- 
+      stage("Gather Deployment Parameters") {
+        steps {
+            timeout(time: 30, unit: 'SECONDS') {
+                script {
+                    // Show the select input modal
+                    def INPUT_PARAMS = input message: 'Please Provide Parameters', ok: 'Next',
+                                    parameters: [
+                                    choice(name: 'ENVIRONMENT', choices: ['dev','test', 'perf', 'prod'].join('\n'), description: 'Please select the Environment'),
+                                    choice(name: 'RELEASE_SCOPE', choices: ['major','minor', 'patch'].join('\n'), description: 'Release Scope'),
+                                    booleanParam(name: 'UNINSTALL', defaultValue: false, description: 'Perform Uninstall')]
+                    env.ENVIRONMENT = INPUT_PARAMS.ENVIRONMENT
+                    env.RELEASE_SCOPE = INPUT_PARAMS.RELEASE_SCOPE
+                    env.UNINSTALL = INPUT_PARAMS.UNINSTALL
+                    echo "UNINSTALL: ${UNINSTALL}"
+                }
+            }
+        }
+    }  
   
     stage('Build App') {
-        agent {
-          node {
-            label 'maven-buildah'
-            reuseNode true
-          }
-        }
       steps {
         //script {
         //    def pom = readMavenPom file: 'pom.xml'
@@ -107,12 +93,6 @@ pipeline {
     }
  
     stage('Test') {
-        agent {
-          node {
-            label 'maven-buildah'
-            reuseNode true
-          }
-        }
       steps {
         sh "${mvnCmd} test"
        // step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
@@ -120,12 +100,6 @@ pipeline {
     }
 
     stage('Build Container') {
-      agent {
-        node {
-            label 'maven-buildah'
-            reuseNode true
-        }
-      }
       steps {
             container("buildah") {
               withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'rh-credentials',
@@ -148,12 +122,6 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
      when {
         expression { ENVIRONMENT != 'prod' }
       }      
-        agent {
-          node {
-            label 'maven-buildah'
-            reuseNode true
-          }
-        }
       steps {     
         container("buildah") {
             sh  """
@@ -168,12 +136,6 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
       when {
         expression { UNINSTALL == 'true' }
       }
-        agent {
-          node {
-            label 'maven-buildah'
-            reuseNode true
-          }
-        }
       steps {
         container("buildah") { 
          sh  """
@@ -189,12 +151,6 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
       when {
         expression { ENVIRONMENT != 'prod' }
       }
-        agent {
-          node {
-            label 'maven-buildah'
-            reuseNode true
-          }
-        }
       steps {
         container("buildah") { 
           sh  """
@@ -210,12 +166,6 @@ usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD']]) {
       when {
         expression { ENVIRONMENT == 'prod' }
       }
-        agent {
-          node {
-            label 'maven-buildah'
-            reuseNode true
-          }
-        }
       steps {
       sshagent (credentials: ['github-jenins']) {
           sh  """
